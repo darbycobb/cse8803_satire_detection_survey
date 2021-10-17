@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 import re
 
-pagesToGet= 100
+pagesToGet= 200
 
 url = "https://babylonbee.com/news"
 
