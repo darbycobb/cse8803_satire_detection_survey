@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 import re
 
-pagesToGet= 5
+pagesToGet= 100
 
 url = "https://babylonbee.com/news"
 
@@ -13,10 +13,10 @@ headers="Date,Link,Heading,Body\n"
 with open(filename, 'a') as f:
     f.write(headers)
 
-for page in range(1,pagesToGet+1):
+for page in range(101,pagesToGet+1):
     print('processing page :', page)
     
-    print(url)
+    url = 'https://babylonbee.com/news?page='+str(page)
     
     #an exception might be thrown, so the code should be in a try-except block
     try:
@@ -38,6 +38,7 @@ for page in range(1,pagesToGet+1):
     
     with open(filename, "a") as f:
         for j in links:
+            
             heading = j[':title']
             link = "https://babylonbee.com" + j[':path'].replace("'", "")
             date = j[":published_on"].replace(',', '')
@@ -63,7 +64,7 @@ for page in range(1,pagesToGet+1):
             for i in body:
                 for p in i.find_all('p', {'class' : None}):
                     body_text += p.text.strip()
-            body_text.replace(',', '')
+            body_text = body_text.replace(',', '')
             #print("BODY TEXT: ", body_text)
             f.write(date + ',' + link  + ',' + heading + ',' + body_text + "\n")
 
