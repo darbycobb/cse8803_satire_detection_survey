@@ -62,7 +62,7 @@ for page in range(1,pagesToGet+1):
             body_text = ""
             for i in body:
                 for p in i.find_all('p', {'class' : None}):
-                    body_text += p.text
+                    body_text += p.text.strip()
             body_text.replace(',', '')
             #print("BODY TEXT: ", body_text)
             f.write(date + ',' + link  + ',' + heading + ',' + body_text + "\n")
