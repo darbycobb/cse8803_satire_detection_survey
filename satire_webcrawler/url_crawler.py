@@ -2,9 +2,8 @@ from bs4 import BeautifulSoup
 import urllib.request,sys,time
 import requests
 import pandas as pd
-from newspaper import Article
 
-pagesToGet= 20
+pagesToGet= 100
 
 #url = "https://www.theonion.com/breaking-news/news"
 url = "https://www.theonion.com/breaking-news/news-in-brief"
@@ -14,7 +13,7 @@ headers="Date,Link,Heading,Body\n"
 with open(filename, 'a') as f:
     f.write(headers)
 
-for page in range(1,pagesToGet+1):
+for page in range(51,pagesToGet+1):
     print('processing page :', page)
     
     print(url)
@@ -38,7 +37,7 @@ for page in range(1,pagesToGet+1):
     
     with open(filename, "a") as f:
         for j in links:
-            heading = j.find("h2").text.strip()
+            heading = j.find("h2").text.strip().replace(',', '')
             print("heading: ", heading)
 
             link = j.find("a",attrs={'class':'sc-1out364-0 hMndXN js_link'})['href'].strip()
@@ -65,4 +64,4 @@ for page in range(1,pagesToGet+1):
             body_text = body_text.replace(',', '')
             f.write(date + ',' + link  + ',' + heading + ',' + body_text + "\n")
 
-        url = 'https://www.theonion.com/breaking-news/news?startIndex='+str(page * 20)
+        url = 'https://www.theonion.com/breaking-news/news-in-brief?startIndex='+str(page * 20)

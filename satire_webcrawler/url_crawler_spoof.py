@@ -5,10 +5,10 @@ import pandas as pd
 
 pagesToGet= 20
 
-url = "https://www.thespoof.com/spoof-news/archive/2020/"
+url = "https://www.thespoof.com/spoof-news/archive/2021/"
 months = {'jan/' : 31, 'feb/' : 28, 'mar/' : 31, 'apr/' : 30, 'may/' : 31, 'jun/' : 30, 'jul/' : 31, 'aug/' : 31, 'sep/' : 30, 'oct/' : 31, 'nov/' :30, 'dec/' : 31}
 #months = ['jan/', 'feb/']
-filename="spoof_urls_2020.csv"
+filename="spoof_urls_2021.csv"
 headers="Date,Link,Heading,Body\n"
 with open(filename, 'a') as f:
     f.write(headers)
@@ -39,7 +39,7 @@ for month, days in months.items():
         with open(filename, "a") as f:
             for j in links:
                 link = 'https://www.thespoof.com' + j.find('a')['href'].strip()
-                heading = j.find('h2').text
+                heading = j.find('h2').text.replace(',', '')
                 print('heading', heading)
                 #an exception might be thrown, so the code should be in a try-except block
                 try:
