@@ -7,6 +7,7 @@ import numpy as np
 import os
 import re
 import torch
+from collections import Counter
 
 from torch.utils.data import DataLoader, Dataset
 from torchtext import vocab, data
@@ -15,12 +16,21 @@ device = 'cuda'
 
 class ArticleDataset(Dataset):
     def __init__(self):
+        self.max_seq_len = 200
         # Load Data
-        data = pd.read_csv('../../../data/final_data.csv', index=False)
-        
+        self.data_path = '../../../data/final_data_combined.csv'
+        self.data = pd.read_csv(data_path, index=False)
+        self.labels = data.loc['label']
+        self.text = data.loc['Heading_Body']
+
         # Create Vocabulary
+        counter = Counter()
+        for comment in data.Heading_Body:
+            counter.update(comment.split())
+        
         vec = vocab.Vectors('glove.840B.300d.txt')
         vocabulary = vocab.Vocab(counter, max_size=500000, vectors=vec, specials=['<pad>', '<unk>'])
+        torch.zero_(vocabulary.vectors[1]); # fill <unk> token as 0
 
     def get_body_for_article(self):
         pass
@@ -33,14 +43,14 @@ class ArticleDataset(Dataset):
 
     def __getitem__(self, index):
 
-        caption = self.caps[index]
+        text = self.data.iloc[index].loc['Heading_Body']
 
         words = re.compile(r'\w+')
-        tokens = words.findall(caption.lower())
-        caption_len = len(tokens) + 2
+        tokens = words.findall(text.lower())
+        text_len = len(tokens) + 2
 
-        if caption_len > self.max_seq_len:
-            caption_len = self.max_seq_len
+        if text_len > self.max_seq_len:
+            text_len = self.max_seq_len
         # Replace words not in vocab with <UNK>
         for i in range(len(tokens)):
             if tokens[i] not in self.vocab:
@@ -63,4 +73,4 @@ class ArticleDataset(Dataset):
 
 
     def __len__(self):
-        return len(self.im_names)
+        return len(self.data)
