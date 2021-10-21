@@ -10,66 +10,46 @@ import torch
 from collections import Counter
 
 from torch.utils.data import DataLoader, Dataset
-from torchtext import vocab, data
+from torchtext.data.utils import get_tokenizer 
+from torchtext import vocab
 
 device = 'cuda'
 
 class ArticleDataset(Dataset):
     def __init__(self):
-        self.max_seq_len = 200
+        self.max_seq_len = 500
         # Load Data
-        self.data_path = '../../../data/final_data_combined.csv'
-        self.data = pd.read_csv(data_path, index=False)
-        self.labels = data.loc['label']
-        self.text = data.loc['Heading_Body']
+        self.data_path = '../../data/clean_final_data_combined.csv'
 
-        # Create Vocabulary
+        self.data = pd.read_csv(self.data_path)
+
+        self.labels = self.data['label']
+        self.text = self.data['Heading_Body']
         counter = Counter()
-        for comment in data.Heading_Body:
-            counter.update(comment.split())
-        
-        vec = vocab.Vectors('glove.840B.300d.txt')
-        vocabulary = vocab.Vocab(counter, max_size=500000, vectors=vec, specials=['<pad>', '<unk>'])
-        torch.zero_(vocabulary.vectors[1]); # fill <unk> token as 0
+        for body in self.data.Heading_Body:
+            counter.update(body.split())
 
-    def get_body_for_article(self):
-        pass
+        glove = vocab.GloVe(name="6B", dim=100, max_vectors=50000)
+        self.vocab = vocab.Vocab(counter, min_freq=3, specials=['<unk>', '<pad>'],
+                            vectors=glove)
 
-    def get_article(self, article_path):
-        pass
+        self.tokenizer = get_tokenizer("basic_english")
 
-    def load_article_from_path(self, path):
-        pass
 
     def __getitem__(self, index):
-
         text = self.data.iloc[index].loc['Heading_Body']
+        label_map = {'real' : 0, 'satire' : 1, 'fake' : 2}
+        label = label_map[self.data.iloc[index].loc['label']]
+        # Pad if needed
+        tokenized = self.tokenizer(text)
+        if len(tokenized) > self.max_seq_len:
+            tokenized = tokenized[:self.max_seq_len]
+        if len(tokenized) < self.max_seq_len:
+            tokenized += ['<pad>'] * (self.max_seq_len - len(tokenized))
 
-        words = re.compile(r'\w+')
-        tokens = words.findall(text.lower())
-        text_len = len(tokens) + 2
+        idxs = [self.vocab.stoi[w] for w in tokenized]
 
-        if text_len > self.max_seq_len:
-            text_len = self.max_seq_len
-        # Replace words not in vocab with <UNK>
-        for i in range(len(tokens)):
-            if tokens[i] not in self.vocab:
-                tokens[i] = '<UNK>'
-        # Add <SOS> at beginning and <EOS> tokens at end
-        tokens.insert(0,'<SOS>')
-        tokens.insert(len(tokens), '<EOS>')
-        # Pad if necessary, shorten if necessary (should only be one caption)
-        if len(tokens) < self.max_seq_len:
-            for i in range(self.max_seq_len-len(tokens)):
-                tokens.append('<PAD>')
-        if len(tokens) > self.max_seq_len:
-            tokens = tokens[:(self.max_seq_len-1)]
-            tokens.append('<EOS>')
-
-        # Map words to indices
-        int_tokens = torch.LongTensor([self.vocab_map[i] for i in tokens])
-
-        return (int_tokens, caption_len)
+        return (torch.tensor(idxs), label)
 
 
     def __len__(self):
