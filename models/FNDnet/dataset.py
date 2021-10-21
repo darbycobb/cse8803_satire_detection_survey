@@ -17,7 +17,7 @@ device = 'cuda'
 
 class ArticleDataset(Dataset):
     def __init__(self):
-        self.max_seq_len = 500
+        self.max_seq_len = 1000
         # Load Data
         self.data_path = '../../data/clean_final_data_combined.csv'
 
@@ -49,7 +49,7 @@ class ArticleDataset(Dataset):
 
         idxs = [self.vocab.stoi[w] for w in tokenized]
 
-        return (torch.tensor(idxs), label)
+        return (torch.tensor(idxs), torch.tensor(label))
 
 
     def __len__(self):

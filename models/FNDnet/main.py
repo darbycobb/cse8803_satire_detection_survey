@@ -10,6 +10,7 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, Subset
 from dataset import ArticleDataset
 from sklearn.model_selection import train_test_split
+from fndnet import FNDNet
 
 def collate_fn_attn(batch):
 	return tuple(zip(*batch))
@@ -38,17 +39,19 @@ if __name__ == '__main__':
     test_split = Subset(articles, test_indices)
 
     # create batches
-    train_batches = DataLoader(train_split, batch_size=batch_size, shuffle=True)
-    test_batches = DataLoader(test_split, batch_size=batch_size, shuffle=True)
-		
+    train_batches = DataLoader(train_split, batch_size=batch_size, shuffle=True, collate_fn=collate_fn_attn)
+    test_batches = DataLoader(test_split, batch_size=batch_size, shuffle=True, collate_fn=collate_fn_attn)
+	
+    model = FNDNet(embed_size=1000, vocab=articles.vocab, vocab_dim=100)
 	# TEST MODEL
-    '''model = CNN_LSTM(
-		embed_size=512,
-		vocab_size = len(flickr_dataset.vocab),
-		attention_dim=512,
-		encoder_dim=2048,
-		decoder_dim=512
-	).to(device)'''
+    for batch in train_batches:
+            #for batch_idx, (image, captions, caplens) in enumerate(iter(dataloader)): 
+                model.train()
+
+                text = torch.stack(batch[0])
+
+                # Feed forward
+                outputs = model(text)
 
 	# FOR TRAINING AND VAL DATASETS ONLY
 	#run_training_loop(model, val_loader, lr=args.learning_rate, num_epochs=args.num_epochs)
