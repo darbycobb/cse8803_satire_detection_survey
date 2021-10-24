@@ -7,7 +7,6 @@ import json
 import torch.optim as optim
 import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
-import matplotlib.pyplot as plt
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -62,7 +61,7 @@ class FNDNet(nn.Module):
         linear1 = self.dropout(self.linear1(flat))
         out = self.dropout(self.linear2(linear1))
 
-        print("out size: ", out.size())
+        return out
 
         
 

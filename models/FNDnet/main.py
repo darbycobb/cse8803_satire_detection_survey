@@ -11,6 +11,9 @@ from torch.utils.data import DataLoader, Subset
 from dataset import ArticleDataset
 from sklearn.model_selection import train_test_split
 from fndnet import FNDNet
+from tqdm import tqdm
+import torch.optim as optim
+import matplotlib.pyplot as plt
 
 def collate_fn_attn(batch):
 	return tuple(zip(*batch))
@@ -20,6 +23,8 @@ if __name__ == '__main__':
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 	
     batch_size = 128
+
+    epochs = 5
 
 	# SET SEED
     seed = np.random.seed(100)
@@ -43,20 +48,49 @@ if __name__ == '__main__':
     test_batches = DataLoader(test_split, batch_size=batch_size, shuffle=True, collate_fn=collate_fn_attn)
 	
     model = FNDNet(embed_size=1000, vocab=articles.vocab, vocab_dim=100)
-	# TEST MODEL
-    for batch in train_batches:
-            #for batch_idx, (image, captions, caplens) in enumerate(iter(dataloader)): 
+    optimizer = torch.optim.Adadelta(model.parameters(), lr=0.1)
+    criterion = nn.CrossEntropyLoss()
+
+    train_loss_history = []
+	# TRAIN
+    for epoch in range(epochs):
+        epoch_loss_history = []
+        with tqdm(train_batches, unit='batch') as tepoch:
+            for batch in tepoch:
+                tepoch.set_description(f"Epoch {epoch}")  
                 model.train()
 
                 text = torch.stack(batch[0])
+                label = torch.stack(batch[1])
+                
+                # Zero the gradients.
+                optimizer.zero_grad()
 
                 # Feed forward
                 outputs = model(text)
 
-	# FOR TRAINING AND VAL DATASETS ONLY
-	#run_training_loop(model, val_loader, lr=args.learning_rate, num_epochs=args.num_epochs)
+                # Calculate the batch loss.
+                loss = criterion(outputs, label)
+                epoch_loss_history.append(loss)
 
-	# EVALUATE
-	#evaluate(model, val_loader)
+                # Backward pass.
+                loss.backward()
+
+                # Update the parameters in the optimizer.
+                optimizer.step()
+                tepoch.set_postfix(loss=loss.item())
+
+        train_loss_history.append(epoch_loss_history)
+
+    plt.figure()
+    epoch_idxs = range(len(train_loss_history))
+
+    plt.plot(epoch_idxs, train_loss_history, "-b")
+    plt.title("Loss")
+    #plt.legend()
+    plt.ylabel("Loss")
+    plt.xlabel("Epochs")
+    plt.xticks(np.arange(0, max(epoch_idxs)+1, step=1))
+    plt.show()
 
     
