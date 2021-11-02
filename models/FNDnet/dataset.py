@@ -19,7 +19,7 @@ class ArticleDataset(Dataset):
     def __init__(self):
         self.max_seq_len = 1000
         # Load Data
-        self.data_path = '../../data/clean_final_data_combined.csv'
+        self.data_path = '../../data/clean_data_satire.csv'
 
         self.data = pd.read_csv(self.data_path)
 
@@ -54,3 +54,6 @@ class ArticleDataset(Dataset):
 
     def __len__(self):
         return len(self.data)
+
+    def text_from_idxs(self, text):
+        return ' '.join([self.vocab.itos[w] for w in text])

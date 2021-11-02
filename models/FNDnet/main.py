@@ -6,6 +6,7 @@ import argparse
 import json
 import re
 import numpy as np
+import pandas as pd
 import torch.nn as nn
 from torch.utils.data import DataLoader, Subset
 from dataset import ArticleDataset
@@ -82,7 +83,35 @@ if __name__ == '__main__':
 
         train_loss_history.append(epoch_loss_history)
 
-    plt.figure()
+    torch.save(model, 'fndnet.pt')
+    #model = torch.load('fndnet.pt')
+    results = []
+    # TEST
+    model.eval()
+    with torch.no_grad():
+        with tqdm(test_batches, unit='batch') as tepoch:
+            for batch in tepoch:
+                    all_text = torch.stack(batch[0])
+                    all_labels = torch.stack(batch[1])
+                    for text, label in zip(all_text, all_labels):
+                        reshaped_text = text[None, :]
+                            
+                        # Feed forward
+                        outputs = model(reshaped_text)
+                        # Get predicted class
+                        prediction = np.argmax(outputs)
+
+                        text_str = articles.text_from_idxs(text)
+                        results.append((text_str, label, prediction))
+
+                    
+
+    results_df = pd.DataFrame(results, columns=['Text', 'Actual', 'Predicted'])
+
+    results_df.to_csv('test_results.csv', index=False)
+
+
+    '''plt.figure()
     epoch_idxs = range(len(train_loss_history))
 
     plt.plot(epoch_idxs, train_loss_history, "-b")
@@ -91,6 +120,6 @@ if __name__ == '__main__':
     plt.ylabel("Loss")
     plt.xlabel("Epochs")
     plt.xticks(np.arange(0, max(epoch_idxs)+1, step=1))
-    plt.show()
+    plt.show()'''
 
     
