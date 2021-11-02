@@ -48,7 +48,7 @@ if __name__ == '__main__':
     train_batches = DataLoader(train_split, batch_size=batch_size, shuffle=True, collate_fn=collate_fn_attn)
     test_batches = DataLoader(test_split, batch_size=batch_size, shuffle=True, collate_fn=collate_fn_attn)
 	
-    model = FNDNet(embed_size=1000, vocab=articles.vocab, vocab_dim=100)
+    '''model = FNDNet(embed_size=1000, vocab=articles.vocab, vocab_dim=100)
     optimizer = torch.optim.Adadelta(model.parameters(), lr=0.1)
     criterion = nn.CrossEntropyLoss()
 
@@ -83,8 +83,8 @@ if __name__ == '__main__':
 
         train_loss_history.append(epoch_loss_history)
 
-    torch.save(model, 'fndnet.pt')
-    #model = torch.load('fndnet.pt')
+    torch.save(model, 'fndnet.pt')'''
+    model = torch.load('fndnet_1.pt')
     results = []
     # TEST
     model.eval()

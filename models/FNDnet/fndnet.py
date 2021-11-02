@@ -1,11 +1,8 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
-import torchvision
-from torchvision import models
 import json
 import torch.optim as optim
-import torchvision.transforms as transforms
 from torch.utils.data import DataLoader
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
