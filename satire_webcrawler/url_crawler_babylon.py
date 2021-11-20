@@ -4,7 +4,7 @@ import requests
 import pandas as pd
 import re
 
-pagesToGet= 200
+pagesToGet= 350
 
 url = "https://babylonbee.com/news"
 
@@ -13,7 +13,7 @@ headers="Date,Link,Heading,Body\n"
 with open(filename, 'a') as f:
     f.write(headers)
 
-for page in range(101,pagesToGet+1):
+for page in range(325,pagesToGet+1):
     print('processing page :', page)
     
     url = 'https://babylonbee.com/news?page='+str(page)

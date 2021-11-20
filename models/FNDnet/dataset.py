@@ -17,9 +17,9 @@ device = 'cuda'
 
 class ArticleDataset(Dataset):
     def __init__(self):
-        self.max_seq_len = 1000
+        self.max_seq_len = 300
         # Load Data
-        self.data_path = '../../data/clean_data_satire.csv'
+        self.data_path = '../../data/clean_data_satire_large_no_punc.csv'
 
         self.data = pd.read_csv(self.data_path)
 
@@ -28,6 +28,10 @@ class ArticleDataset(Dataset):
         counter = Counter()
         for body in self.data.Heading_Body:
             counter.update(body.split())
+        with open('vocab.csv', encoding='utf-8-sig', mode='w') as fp:
+            fp.write('KMC,freq\n')  
+            for tag, count in counter.items():  
+                fp.write('{},{}\n'.format(tag, count)) 
 
         glove = vocab.GloVe(name="6B", dim=100, max_vectors=50000)
         self.vocab = vocab.Vocab(counter, min_freq=3, specials=['<unk>', '<pad>'],

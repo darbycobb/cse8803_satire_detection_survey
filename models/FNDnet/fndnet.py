@@ -27,7 +27,7 @@ class FNDNet(nn.Module):
 
         self.flat = nn.Flatten()
         self.dropout = nn.Dropout(p)
-        self.linear1 = nn.Linear(hidden_size*3, hidden_size)
+        self.linear1 = nn.Linear(hidden_size, hidden_size)
         self.linear2 = nn.Linear(hidden_size, 3)
 
         self.relu = nn.ReLU()

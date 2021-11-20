@@ -48,7 +48,7 @@ if __name__ == '__main__':
     train_batches = DataLoader(train_split, batch_size=batch_size, shuffle=True, collate_fn=collate_fn_attn)
     test_batches = DataLoader(test_split, batch_size=batch_size, shuffle=True, collate_fn=collate_fn_attn)
 	
-    '''model = FNDNet(embed_size=1000, vocab=articles.vocab, vocab_dim=100)
+    model = FNDNet(embed_size=1000, vocab=articles.vocab, vocab_dim=100)
     optimizer = torch.optim.Adadelta(model.parameters(), lr=0.1)
     criterion = nn.CrossEntropyLoss()
 
@@ -83,8 +83,8 @@ if __name__ == '__main__':
 
         train_loss_history.append(epoch_loss_history)
 
-    torch.save(model, 'fndnet.pt')'''
-    model = torch.load('fndnet_1.pt')
+    torch.save(model, 'saved_models/fndnet.pt')
+    #model = torch.load('fndnet_1.pt')
     results = []
     # TEST
     model.eval()
@@ -105,21 +105,8 @@ if __name__ == '__main__':
                         results.append((text_str, label, prediction))
 
                     
-
     results_df = pd.DataFrame(results, columns=['Text', 'Actual', 'Predicted'])
 
-    results_df.to_csv('test_results.csv', index=False)
-
-
-    '''plt.figure()
-    epoch_idxs = range(len(train_loss_history))
-
-    plt.plot(epoch_idxs, train_loss_history, "-b")
-    plt.title("Loss")
-    #plt.legend()
-    plt.ylabel("Loss")
-    plt.xlabel("Epochs")
-    plt.xticks(np.arange(0, max(epoch_idxs)+1, step=1))
-    plt.show()'''
+    results_df.to_csv('saved_results/test_results.csv', index=False)
 
     

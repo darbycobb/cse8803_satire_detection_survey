@@ -3,7 +3,7 @@ import urllib.request,sys,time
 import requests
 import pandas as pd
 
-pagesToGet= 100
+pagesToGet= 150
 
 #url = "https://www.theonion.com/breaking-news/news"
 url = "https://www.theonion.com/breaking-news/news-in-brief"
@@ -13,7 +13,7 @@ headers="Date,Link,Heading,Body\n"
 with open(filename, 'a') as f:
     f.write(headers)
 
-for page in range(51,pagesToGet+1):
+for page in range(100,pagesToGet+1):
     print('processing page :', page)
     
     print(url)

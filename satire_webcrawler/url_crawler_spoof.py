@@ -5,10 +5,10 @@ import pandas as pd
 
 pagesToGet= 20
 
-url = "https://www.thespoof.com/spoof-news/archive/2021/"
+url = "https://www.thespoof.com/spoof-news/archive/2019/"
 months = {'jan/' : 31, 'feb/' : 28, 'mar/' : 31, 'apr/' : 30, 'may/' : 31, 'jun/' : 30, 'jul/' : 31, 'aug/' : 31, 'sep/' : 30, 'oct/' : 31, 'nov/' :30, 'dec/' : 31}
 #months = ['jan/', 'feb/']
-filename="spoof_urls_2021.csv"
+filename="spoof_urls_2019.csv"
 headers="Date,Link,Heading,Body\n"
 with open(filename, 'a') as f:
     f.write(headers)
