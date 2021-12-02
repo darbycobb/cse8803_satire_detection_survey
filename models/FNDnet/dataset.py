@@ -19,14 +19,14 @@ class ArticleDataset(Dataset):
     def __init__(self):
         self.max_seq_len = 300
         # Load Data
-        self.data_path = '../../data/clean_data_satire_large_no_punc.csv'
+        self.data_path = '../../data/clean_final_data_no_date.csv'
 
         self.data = pd.read_csv(self.data_path)
 
         self.labels = self.data['label']
-        self.text = self.data['Heading_Body']
+        self.text = self.data['Body']
         counter = Counter()
-        for body in self.data.Heading_Body:
+        for body in self.data.Body:
             counter.update(body.split())
         with open('vocab.csv', encoding='utf-8-sig', mode='w') as fp:
             fp.write('KMC,freq\n')  
@@ -41,7 +41,7 @@ class ArticleDataset(Dataset):
 
 
     def __getitem__(self, index):
-        text = self.data.iloc[index].loc['Heading_Body']
+        text = self.data.iloc[index].loc['Body']
         label_map = {'real' : 0, 'satire' : 1, 'fake' : 2}
         label = label_map[self.data.iloc[index].loc['label']]
         # Pad if needed

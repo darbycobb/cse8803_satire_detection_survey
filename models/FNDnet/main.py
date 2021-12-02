@@ -25,7 +25,7 @@ if __name__ == '__main__':
 	
     batch_size = 128
 
-    epochs = 5
+    epochs = 3
 
 	# SET SEED
     seed = np.random.seed(100)
@@ -83,7 +83,7 @@ if __name__ == '__main__':
 
         train_loss_history.append(epoch_loss_history)
 
-    torch.save(model, 'saved_models/fndnet.pt')
+    torch.save(model, 'saved_models/fndnet_body.pt')
     #model = torch.load('fndnet_1.pt')
     results = []
     # TEST
@@ -107,6 +107,6 @@ if __name__ == '__main__':
                     
     results_df = pd.DataFrame(results, columns=['Text', 'Actual', 'Predicted'])
 
-    results_df.to_csv('saved_results/test_results.csv', index=False)
+    results_df.to_csv('saved_results/test_results_body.csv', index=False)
 
     
