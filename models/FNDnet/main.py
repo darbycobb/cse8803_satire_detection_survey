@@ -25,7 +25,7 @@ if __name__ == '__main__':
 	
     batch_size = 128
 
-    epochs = 3
+    epochs = 4
 
 	# SET SEED
     seed = np.random.seed(100)
@@ -39,7 +39,7 @@ if __name__ == '__main__':
     test_size=0.2,
     random_state=seed
     )
-
+'''
     # generate subset based on indices
     train_split = Subset(articles, train_indices)
     test_split = Subset(articles, test_indices)
@@ -107,6 +107,6 @@ if __name__ == '__main__':
                     
     results_df = pd.DataFrame(results, columns=['Text', 'Actual', 'Predicted'])
 
-    results_df.to_csv('saved_results/test_results_body.csv', index=False)
+    results_df.to_csv('saved_results/test_results_body.csv', index=False)'''
 
     
