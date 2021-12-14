@@ -13,7 +13,7 @@ headers="Date,Link,Heading,Body\n"
 with open(filename, 'a') as f:
     f.write(headers)
 
-for page in range(325,pagesToGet+1):
+for page in range(1,pagesToGet+1):
     print('processing page :', page)
     
     url = 'https://babylonbee.com/news?page='+str(page)
