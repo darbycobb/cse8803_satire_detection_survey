@@ -3,7 +3,7 @@
 ## Where Everything Is
 The data is hosted on Google Drive and can be downloaded here: https://drive.google.com/file/d/1lYRTWBwGZoQV_P5slCMnt6Z1MGbzgeK3/view?usp=sharing
 In the data folder, the zipped final data and the zipped WELFake dataset are included.
-Code for each benchmarked model is in the model folder.
+Code for each benchmarked model is in the models folder.
 
 Code for data scraping and preprocessing is located in the satire_webcrawler folder. The respective data scraped from each website is in this folder as well.
 
