@@ -26,7 +26,7 @@ if __name__ == '__main__':
 	
     batch_size = 128
 
-    epochs = 5
+    epochs = 4
 
 	# SET SEED
     seed = np.random.seed(100)
@@ -41,6 +41,8 @@ if __name__ == '__main__':
     random_state=seed
     )
 
+    print(list(set(train_indices) & set(test_indices)))
+
     # generate subset based on indices
     train_split = Subset(articles, train_indices)
     test_split = Subset(articles, test_indices)
@@ -50,20 +52,18 @@ if __name__ == '__main__':
     test_batches = DataLoader(test_split, batch_size=batch_size, shuffle=True)
 
     model = BOW(vocab_size=len(articles.token2idx))
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.1)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.05)
     criterion = nn.CrossEntropyLoss()
 
     train_loss_history = []
-	# TRAIN
+
+    
     for epoch in range(epochs):
-        progress_bar = tqdm(train_batches, leave=False)
+        progress_bar = tqdm(train_batches)
         losses = []
         total = 0
         for inputs, target in progress_bar:
-            #print(inputs.shape)
             model.zero_grad()
-
-            #print(target)
 
             output = model(inputs)
             loss = criterion(output.squeeze(), target)
@@ -77,13 +77,13 @@ if __name__ == '__main__':
 
         tqdm.write(f'Epoch #{epoch + 1}\tTrain Loss: {loss:.3f}')
 
-    torch.save(model, 'saved_models/bow_heading_body.pt')
-    #model = torch.load('fndnet_1.pt')
+    torch.save(model, 'saved_models/bow_body.pt')
+    #model = torch.load('saved_models/bow_heading_body.pt')
     results = []
     # TEST
     model.eval()
     with torch.no_grad():
-        progress_bar = tqdm(test_batches, leave=False)
+        progress_bar = tqdm(test_batches)
         for inputs, target in progress_bar:
             for text, label in zip(inputs, target):
                         outputs = model(text)
@@ -95,4 +95,4 @@ if __name__ == '__main__':
                     
     results_df = pd.DataFrame(results, columns=['Actual', 'Predicted'])
 
-    results_df.to_csv('saved_results/test_results_heading_body.csv', index=False)
+    results_df.to_csv('saved_results/test_results_body.csv', index=False)

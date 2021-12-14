@@ -24,7 +24,7 @@ class ArticleDataset(Dataset):
         df = pd.read_csv(self.data_path)
         
         self.vectorizer = CountVectorizer(stop_words='english', max_df=0.99, min_df=0.005)
-        self.sequences = self.vectorizer.fit_transform(df.Heading_Body.tolist())
+        self.sequences = self.vectorizer.fit_transform(df.Body.tolist())
         
         label_map = {'real' : 0, 'satire' : 1, 'fake' : 2}
         
