@@ -14,7 +14,7 @@ python url_crawler_babylon.py
 python url_crawler_onion.py
 python url_crawler_spoof.py
 ```
-After the data is collected, data_cleaning.ipynb can be run on a local Jupyter Notebook, VS Code, or Google Colaboratory. Note that the WELFake dataset is needed for this file. The data_cleanning.ipynb outputs the final dataset.
+After the data is collected, data_cleaning.ipynb can be run on a local Jupyter Notebook, VS Code, or Google Colaboratory. Note that the WELFake dataset is needed for this file. The data_cleaning.ipynb outputs the final dataset.
 
 FNDNet and Bag of Words can be run in their respective folders using the command 
 ```
